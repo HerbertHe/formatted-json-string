@@ -36,7 +36,7 @@ export class FormattedJSONString {
             ? this._const_indent_space.repeat(
                   (this._indent_count * this._options.indent_size) / 2
               )
-            : "\t"
+            : "\t".repeat((this._indent_count * this._options.indent_size) / 2)
     }
 
     format = () => {
@@ -49,8 +49,8 @@ export class FormattedJSONString {
                     this._result +=
                         (before === ":"
                             ? " "
-                            : ["{", "[", ","].includes(before)
-                            ? ""
+                            : ["{", "["].includes(before)
+                            ? this._get_newline() + this._get_indent()
                             : this._get_indent()) + this._raw[i]
 
                     this._indent_count++
@@ -74,11 +74,7 @@ export class FormattedJSONString {
                 }
 
                 case ",": {
-                    if (!["{", "["].includes(next)) {
-                        this._result += this._raw[i] + this._get_newline()
-                    } else {
-                        this._result += this._raw[i]
-                    }
+                    this._result += this._raw[i] + this._get_newline()
 
                     if (next === `"`) {
                         this._result += this._get_indent() + this._raw[++i]
